@@ -43,7 +43,7 @@
         }
 
         .logo-container {
-            max-width: 250px;
+            max-width: 150px;
         }
 
         .logo-container img {
@@ -219,7 +219,7 @@
         }
 
         .table-group + .table-group {
-            margin-left: 15px; /* Add separation between groups */
+            margin-left: 15px;
         }
 
         .chair {
@@ -337,53 +337,62 @@
     </div>
 
     <script>
-        // Hide logo if it doesn't exist (until user uploads it)
+        // Hide logo if it doesn't exist
         document.getElementById('logo').onerror = function() {
             this.style.display = 'none';
         };
 
-        // Define the seating layout: 4-4-2-4-4 per row, 6 rows
         const LAYOUT = [4, 4, 2, 4, 4];
         const ROWS = 6;
         const TOTAL_CHAIRS = 108;
 
-        // Priority order for filling (middle front first, right column and back row last)
+        // New fill priority: Row by row, center out, keeping pairs together
         function generateFillPriority() {
             const priority = [];
             
-            // For each row (front to back, but skip row 6 initially)
-            for (let row = 0; row < ROWS - 1; row++) {
+            // Process rows 1-5 first
+            for (let row = 0; row < 5; row++) {
                 const rowStart = row * 18;
                 
-                // Middle 2
+                // Fill 4-2-4 middle section first (chairs 4-13 in each row)
+                // Center pair first: 9, 10 (adjusted to row)
                 priority.push(rowStart + 8, rowStart + 9);
                 
-                // Inner left 4
-                priority.push(rowStart + 4, rowStart + 5, rowStart + 6, rowStart + 7);
+                // Expand outward in pairs
+                priority.push(rowStart + 7, rowStart + 10);
+                priority.push(rowStart + 6, rowStart + 11);
+                priority.push(rowStart + 5, rowStart + 12);
+                priority.push(rowStart + 4, rowStart + 13);
                 
-                // Inner right 4
-                priority.push(rowStart + 10, rowStart + 11, rowStart + 12, rowStart + 13);
-                
-                // Outer left 4
-                priority.push(rowStart + 0, rowStart + 1, rowStart + 2, rowStart + 3);
-                
-                // Outer right 4 (but not the rightmost chair yet)
-                priority.push(rowStart + 14, rowStart + 15, rowStart + 16);
+                // Then outer pairs (leaving rightmost two columns for later)
+                priority.push(rowStart + 3, rowStart + 2);
+                priority.push(rowStart + 14, rowStart + 15);
+                priority.push(rowStart + 1, rowStart + 0);
             }
             
-            // Now add rightmost column (chairs 17, 35, 53, 71, 89) for rows 1-5
-            for (let row = 0; row < ROWS - 1; row++) {
-                priority.push(row * 18 + 17);
+            // Now fill the two rightmost columns for rows 1-5
+            for (let row = 0; row < 5; row++) {
+                const rowStart = row * 18;
+                priority.push(rowStart + 16, rowStart + 17);
             }
             
-            // Finally add back row (row 6, chairs 90-107)
+            // Finally, fill back row (row 6, chairs 90-107)
             const backRowStart = 5 * 18;
+            
+            // Center pair
             priority.push(backRowStart + 8, backRowStart + 9);
-            priority.push(backRowStart + 4, backRowStart + 5, backRowStart + 6, backRowStart + 7);
-            priority.push(backRowStart + 10, backRowStart + 11, backRowStart + 12, backRowStart + 13);
-            priority.push(backRowStart + 0, backRowStart + 1, backRowStart + 2, backRowStart + 3);
-            priority.push(backRowStart + 14, backRowStart + 15, backRowStart + 16);
-            priority.push(backRowStart + 17);
+            
+            // Expand outward in pairs
+            priority.push(backRowStart + 7, backRowStart + 10);
+            priority.push(backRowStart + 6, backRowStart + 11);
+            priority.push(backRowStart + 5, backRowStart + 12);
+            priority.push(backRowStart + 4, backRowStart + 13);
+            
+            // Outer pairs
+            priority.push(backRowStart + 3, backRowStart + 2);
+            priority.push(backRowStart + 14, backRowStart + 15);
+            priority.push(backRowStart + 1, backRowStart + 0);
+            priority.push(backRowStart + 16, backRowStart + 17);
             
             return priority;
         }
@@ -416,7 +425,6 @@
                         chair.dataset.chairNum = chairNumber;
                         chair.textContent = chairNumber + 1;
                         
-                        // Fixed: Use arrow function to capture chairNumber correctly
                         chair.addEventListener('click', (function(num) {
                             return function() {
                                 toggleChair(num);
@@ -449,10 +457,8 @@
                 return;
             }
             
-            // Reset all chairs
             chairStates.fill(false);
             
-            // Place bags according to priority
             for (let i = 0; i < numTMs && i < fillPriority.length; i++) {
                 chairStates[fillPriority[i]] = true;
             }
@@ -467,7 +473,6 @@
         }
 
         function updateDisplay() {
-            // Update chair visuals
             for (let i = 0; i < TOTAL_CHAIRS; i++) {
                 const chair = document.querySelector(`[data-chair-num="${i}"]`);
                 if (chair) {
@@ -479,13 +484,11 @@
                 }
             }
             
-            // Update summary
             const bagCount = chairStates.filter(state => state).length;
             document.getElementById('bagCount').textContent = bagCount;
             document.getElementById('summary').style.display = 'block';
         }
 
-        // Initialize on load
         window.addEventListener('load', () => {
             createSeatingLayout();
         });
