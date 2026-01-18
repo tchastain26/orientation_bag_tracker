@@ -246,7 +246,7 @@
 
         .chair:hover {
             transform: scale(1.08);
-            box-shadow: 0 3px 10px rgba(0, 107, 182, 0.3);
+            box-shadow: 0 3px 10px rgba(176, 0, 142, 0.4);
         }
 
         .summary {
@@ -263,29 +263,105 @@
             font-weight: 600;
         }
 
+        /* Mobile-specific improvements */
         @media (max-width: 768px) {
-            .chair {
-                width: 42px;
-                height: 42px;
-                font-size: 0.8rem;
+            body {
+                padding: 10px;
+            }
+
+            .app-container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+
+            input[type="number"] {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .legend {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px;
+            }
+
+            .legend-item {
+                font-size: 0.85rem;
+            }
+
+            .legend-box {
+                width: 35px;
+                height: 35px;
+                flex-shrink: 0;
+            }
+
+            .seating-area {
+                padding: 10px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .row {
+                gap: 6px;
+                min-width: 900px;
             }
             
-            .row {
-                gap: 5px;
+            .chair {
+                width: 45px;
+                height: 45px;
+                font-size: 0.85rem;
+                flex-shrink: 0;
             }
             
             .table-group {
-                gap: 5px;
+                gap: 6px;
             }
 
             .table-group + .table-group {
-                margin-left: 10px;
+                margin-left: 12px;
+            }
+
+            .row-label {
+                min-width: 55px;
+                font-size: 0.85rem;
+                flex-shrink: 0;
             }
 
             .header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+            }
+
+            .room-label {
+                font-size: 1rem;
+                padding: 8px;
+            }
+
+            .summary {
+                font-size: 0.9rem;
+                padding: 12px 15px;
             }
         }
     </style>
