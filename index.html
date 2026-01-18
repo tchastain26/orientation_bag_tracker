@@ -3,36 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ballad Health Orientation Bag Tracker">
-    <meta name="theme-color" content="#2563eb">
-    <title>Ballad Health - Orientation Tools</title>
+    <meta name="description" content="Ballad Health Orientation Tools">
+    <meta name="theme-color" content="#006BB6">
+    <title>Orientation Tools</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="images/icon-192.png">
     <link rel="apple-touch-icon" href="images/icon-192.png">
-    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #006BB6 0%, #005a94 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+        }
+
+        .logo-container {
+            max-width: 300px;
+            margin: 0 auto 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 8px;
+            padding: 35px;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #006BB6;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #006BB6;
+            font-weight: 600;
+        }
+
+        .app-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        footer p + p {
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🎒 Ballad Health Orientation Tools</h1>
-            <p>Team tools for managing orientation day</p>
+            <div class="logo-container">
+                <img src="images/ballad-logo.jpg" alt="Ballad Health Logo" id="logo">
+            </div>
+            <h1>Orientation Tools</h1>
+            <p>Team resources for orientation day management</p>
         </header>
 
         <main class="app-grid">
             <a href="apps/orientation-bag-tracker.html" class="app-card">
-                <div class="app-icon">🎒</div>
                 <h2>Orientation Bag Tracker</h2>
-                <p>Plan seating and bag placement for orientation day</p>
+                <p>Plan seating arrangements and bag placement for orientation day. Enter the number of team members and automatically generate optimal seating layout.</p>
             </a>
         </main>
 
         <footer>
-            <p>Install this PWA: Click share button and "Add to Home Screen"</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">Works offline after first visit</p>
+            <p>Install this app: Click your browser's menu and select "Add to Home Screen"</p>
+            <p>Works offline after first visit</p>
         </footer>
     </div>
 
     <script>
+        // Hide logo if it doesn't exist (until user uploads it)
+        document.getElementById('logo').onerror = function() {
+            this.parentElement.style.display = 'none';
+        };
+
         // Register service worker for PWA functionality
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/service-worker.js')
