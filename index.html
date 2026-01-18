@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ballad Health Orientation Bag Tracker">
+    <meta name="theme-color" content="#2563eb">
+    <title>Ballad Health - Orientation Tools</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="images/icon-192.png">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎒 Ballad Health Orientation Tools</h1>
+            <p>Team tools for managing orientation day</p>
+        </header>
+
+        <main class="app-grid">
+            <a href="apps/orientation-bag-tracker.html" class="app-card">
+                <div class="app-icon">🎒</div>
+                <h2>Orientation Bag Tracker</h2>
+                <p>Plan seating and bag placement for orientation day</p>
+            </a>
+        </main>
+
+        <footer>
+            <p>Install this PWA: Click share button and "Add to Home Screen"</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">Works offline after first visit</p>
+        </footer>
+    </div>
+
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+    </script>
+</body>
+</html>
