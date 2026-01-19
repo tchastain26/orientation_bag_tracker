@@ -455,7 +455,7 @@
             <div class="controls">
                 <div class="form-group">
                     <label for="numTMs">Number of Team Members:</label>
-                    <input type="number" id="numTMs" min="1" max="108" placeholder="Enter number">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" id="numTMs" min="1" max="108" placeholder="Enter number">
                 </div>
                 <button onclick="placeBags()">Place Bags</button>
                 <button class="reset" onclick="resetAll()">Reset All</button>
