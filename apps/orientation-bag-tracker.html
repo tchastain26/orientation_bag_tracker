@@ -195,6 +195,41 @@
             background: #fafafa;
             border-radius: 6px;
             border: 1px solid #e0e0e0;
+            position: relative;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Scroll indicators - subtle shadows on left/right */
+        .seating-area::before,
+        .seating-area::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .seating-area::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent);
+        }
+
+        .seating-area::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+        }
+
+        .seating-area.show-left-shadow::before {
+            opacity: 1;
+        }
+
+        .seating-area.show-right-shadow::after {
+            opacity: 1;
         }
 
         .row {
@@ -211,6 +246,7 @@
             color: #666;
             min-width: 70px;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         .table-group {
@@ -236,6 +272,7 @@
             transition: all 0.2s;
             background: white;
             color: #333;
+            flex-shrink: 0;
         }
 
         .chair.filled {
@@ -318,34 +355,11 @@
 
             .seating-area {
                 padding: 10px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .row {
-                gap: 6px;
-                min-width: 900px;
-            }
-            
-            .chair {
-                width: 45px;
-                height: 45px;
-                font-size: 0.85rem;
-                flex-shrink: 0;
-            }
-            
-            .table-group {
-                gap: 6px;
-            }
-
-            .table-group + .table-group {
-                margin-left: 12px;
             }
 
             .row-label {
-                min-width: 55px;
-                font-size: 0.85rem;
-                flex-shrink: 0;
+                min-width: 50px;
+                font-size: 0.8rem;
             }
 
             .header {
@@ -362,6 +376,65 @@
             .summary {
                 font-size: 0.9rem;
                 padding: 12px 15px;
+            }
+        }
+
+        /* Portrait mode - allow some scrolling with indicators */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .row {
+                gap: 5px;
+            }
+            
+            .chair {
+                width: 38px;
+                height: 38px;
+                font-size: 0.75rem;
+            }
+            
+            .table-group {
+                gap: 5px;
+            }
+
+            .table-group + .table-group {
+                margin-left: 10px;
+            }
+        }
+
+        /* Landscape mode - fit everything on screen */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            .seating-area {
+                padding: 10px 15px;
+            }
+
+            .row {
+                gap: 4px;
+            }
+            
+            .chair {
+                width: 40px;
+                height: 40px;
+                font-size: 0.75rem;
+            }
+            
+            .table-group {
+                gap: 4px;
+            }
+
+            .table-group + .table-group {
+                margin-left: 8px;
+            }
+
+            .row-label {
+                min-width: 45px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Larger landscape screens */
+        @media (min-width: 1025px) and (orientation: landscape) {
+            .chair {
+                width: 52px;
+                height: 52px;
             }
         }
     </style>
@@ -567,7 +640,43 @@
 
         window.addEventListener('load', () => {
             createSeatingLayout();
+            setupScrollIndicators();
         });
+
+        // Setup scroll shadow indicators
+        function setupScrollIndicators() {
+            const seatingArea = document.getElementById('seatingArea');
+            
+            function updateScrollShadows() {
+                const scrollLeft = seatingArea.scrollLeft;
+                const scrollWidth = seatingArea.scrollWidth;
+                const clientWidth = seatingArea.clientWidth;
+                const maxScroll = scrollWidth - clientWidth;
+                
+                // Show left shadow if scrolled right
+                if (scrollLeft > 10) {
+                    seatingArea.classList.add('show-left-shadow');
+                } else {
+                    seatingArea.classList.remove('show-left-shadow');
+                }
+                
+                // Show right shadow if not fully scrolled
+                if (scrollLeft < maxScroll - 10) {
+                    seatingArea.classList.add('show-right-shadow');
+                } else {
+                    seatingArea.classList.remove('show-right-shadow');
+                }
+            }
+            
+            // Update on scroll
+            seatingArea.addEventListener('scroll', updateScrollShadows);
+            
+            // Update on resize
+            window.addEventListener('resize', updateScrollShadows);
+            
+            // Initial update
+            setTimeout(updateScrollShadows, 100);
+        }
     </script>
 </body>
 </html>
