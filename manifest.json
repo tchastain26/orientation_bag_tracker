@@ -1,7 +1,7 @@
 {
   "name": "Ballad Health Orientation Tools",
   "short_name": "Orientation",
-  "description": "Tools for managing Ballad Health orientation day",
+  "description": "Tools for managing Ballad Health Day One Orientation",
   "start_url": "/orientation_bag_tracker/",
   "display": "standalone",
   "background_color": "#ffffff",
