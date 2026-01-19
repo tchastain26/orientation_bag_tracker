@@ -204,7 +204,7 @@
         .seating-area::before,
         .seating-area::after {
             content: '';
-            position: absolute;
+            position: sticky;
             top: 0;
             bottom: 0;
             width: 30px;
@@ -216,12 +216,16 @@
 
         .seating-area::before {
             left: 0;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent);
+            float: left;
+            margin-right: -30px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.15), transparent);
         }
 
         .seating-area::after {
             right: 0;
-            background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+            float: right;
+            margin-left: -30px;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.15), transparent);
         }
 
         .seating-area.show-left-shadow::before {
@@ -404,33 +408,42 @@
             }
         }
 
-        /* Landscape mode - fit everything on screen */
+        /* Landscape mode - fit everything on screen without scrolling */
         @media (max-width: 1024px) and (orientation: landscape) {
             .seating-area {
                 padding: 10px 15px;
+                overflow-x: visible;
             }
 
             .row {
-                gap: 4px;
+                gap: 3px;
+                justify-content: flex-start;
             }
             
             .chair {
-                width: 40px;
-                height: 40px;
-                font-size: 0.75rem;
+                width: 35px;
+                height: 35px;
+                font-size: 0.7rem;
+                border-width: 1.5px;
             }
             
             .table-group {
-                gap: 4px;
+                gap: 3px;
             }
 
             .table-group + .table-group {
-                margin-left: 8px;
+                margin-left: 6px;
             }
 
             .row-label {
-                min-width: 45px;
-                font-size: 0.75rem;
+                min-width: 40px;
+                font-size: 0.7rem;
+            }
+
+            /* Hide scroll shadows in landscape since no scrolling needed */
+            .seating-area::before,
+            .seating-area::after {
+                display: none;
             }
         }
 
