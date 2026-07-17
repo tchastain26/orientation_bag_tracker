@@ -1,16 +1,19 @@
-const CACHE_NAME = 'od-tools-v1';
+const CACHE_NAME = 'od-tools-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles/main.css',
-  '/apps/orientation-bag-tracker.html',
-  '/manifest.json',
-  '/images/icon-192.png',
-  '/images/icon-512.png'
+  './',
+  './index.html',
+  './styles/main.css',
+  './apps/orientation-bag-tracker.html',
+  './firebase-config.js',
+  './manifest.json',
+  './images/ballad-logo.jpg',
+  './images/icon-192.png',
+  './images/icon-512.png'
 ];
 
 // Install service worker and cache files
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -61,6 +64,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });

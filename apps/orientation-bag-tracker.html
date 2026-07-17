@@ -120,6 +120,10 @@
             min-width: 120px;
         }
 
+        .settings-row .rows-field {
+            flex: 0 0 90px;
+        }
+
         .settings-row label {
             display: block;
             font-weight: 600;
@@ -128,7 +132,8 @@
             font-size: 0.88rem;
         }
 
-        .settings-row input {
+        .settings-row input,
+        .settings-row textarea {
             width: 100%;
             padding: 9px 12px;
             border: 2px solid #e0e0e0;
@@ -138,9 +143,28 @@
             transition: border-color 0.2s;
         }
 
+        .settings-row textarea {
+            min-height: 94px;
+            resize: vertical;
+            line-height: 1.35;
+        }
+
         .settings-row input:focus {
             outline: none;
             border-color: #006BB6;
+        }
+
+        .settings-row textarea:focus {
+            outline: none;
+            border-color: #006BB6;
+        }
+
+        .custom-layout-row {
+            align-items: flex-start;
+        }
+
+        .custom-layout-row button {
+            align-self: flex-end;
         }
 
         .config-summary {
@@ -333,11 +357,25 @@
 
         .table-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
+            padding: 4px;
+            background: #eef6fb;
+            border: 1px solid #d5e8f5;
+            border-radius: 6px;
+            flex-shrink: 0;
         }
 
         .table-group + .table-group {
             margin-left: 15px;
+        }
+
+        .table-pair {
+            display: flex;
+            gap: 2px;
+            padding: 2px;
+            background: white;
+            border: 1px solid #b8d4e8;
+            border-radius: 5px;
         }
 
         .chair {
@@ -456,21 +494,35 @@
                 align-items: end;
             }
             .settings-row .sfield { min-width: 0; }
+            .settings-row .rows-field { flex-basis: auto; }
             .settings-row label {
                 margin-bottom: 4px;
                 font-size: 0.72rem;
                 line-height: 1.15;
             }
-            .settings-row input {
+            .settings-row input,
+            .settings-row textarea {
                 padding: 7px 8px;
                 font-size: 0.85rem;
                 border-width: 1px;
+            }
+            .settings-row input {
                 height: 36px;
+            }
+            .settings-row textarea {
+                min-height: 78px;
             }
             .settings-row button {
                 width: auto;
                 min-width: 54px;
                 padding: 0 9px;
+            }
+            .custom-layout-row {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .custom-layout-row button {
+                width: 100%;
+                height: 34px;
             }
             .config-summary {
                 padding: 5px 8px;
@@ -527,8 +579,8 @@
                 font-size: clamp(0.58rem, 1.8vw, 0.7rem);
             }
             .chair {
-                width: clamp(12px, calc((100cqw - 54px) / 18), 28px);
-                height: clamp(12px, calc((100cqw - 54px) / 18), 28px);
+                width: clamp(12px, calc((100cqw - 84px) / var(--max-row-seats, 18)), 28px);
+                height: clamp(12px, calc((100cqw - 84px) / var(--max-row-seats, 18)), 28px);
                 border-width: 1px;
                 border-radius: 3px;
                 font-size: clamp(0.42rem, 1.8vw, 0.62rem);
@@ -537,16 +589,18 @@
                 transform: none;
                 box-shadow: none;
             }
-            .table-group { gap: 2px; }
+            .table-group { gap: 2px; padding: 2px; border-radius: 4px; }
             .table-group + .table-group { margin-left: 4px; }
+            .table-pair { gap: 1px; padding: 1px; border-radius: 3px; }
         }
 
         @media (max-width: 1024px) and (orientation: landscape) {
             .seating-area { padding: 10px 15px; overflow-x: visible; }
             .row { gap: 3px; justify-content: flex-start; }
             .chair { width: 35px; height: 35px; font-size: 0.7rem; border-width: 1.5px; }
-            .table-group { gap: 3px; }
+            .table-group { gap: 3px; padding: 3px; }
             .table-group + .table-group { margin-left: 6px; }
+            .table-pair { gap: 1px; padding: 1px; }
             .row-label { min-width: 40px; font-size: 0.7rem; }
             .seating-area::before, .seating-area::after { display: none; }
         }
@@ -579,18 +633,25 @@
             </div>
 
             <details class="settings-panel">
-                <summary>Configure Room Layout</summary>
+                <summary>Configure Table Layout</summary>
                 <div class="settings-inner">
                     <div class="settings-row">
-                        <div class="sfield">
+                        <div class="sfield rows-field">
                             <label for="cfgRows">Rows</label>
                             <input type="number" id="cfgRows" min="1" max="30" value="6">
                         </div>
                         <div class="sfield">
-                            <label for="cfgLayout">Chair groups per row</label>
-                            <input type="text" id="cfgLayout" placeholder="e.g. 6,6,6">
+                            <label for="cfgLayout">Table groups per row</label>
+                            <input type="text" id="cfgLayout" placeholder="e.g. 6,6,4">
                         </div>
-                        <button onclick="applyConfig()">Apply</button>
+                        <button onclick="applyRepeatedLayout()">Apply</button>
+                    </div>
+                    <div class="settings-row custom-layout-row">
+                        <div class="sfield">
+                            <label for="cfgRowLayouts">Custom rows</label>
+                            <textarea id="cfgRowLayouts" spellcheck="false" placeholder="6,6,4&#10;6,6,4&#10;4,4,4,4"></textarea>
+                        </div>
+                        <button onclick="applyCustomLayout()">Apply Custom</button>
                     </div>
                     <p class="config-summary" id="configSummary"></p>
                 </div>
@@ -630,24 +691,149 @@
         const db = firebase.firestore();
         const myClientId = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
-        // Layout state - defaults to 6-6-6
+        // Layout state - every number is a seat count, with two seats per table.
         let rows = 6;
         let layout = [6, 6, 6];
+        let rowLayouts = makeRepeatedRowLayouts(rows, layout);
         let totalChairs = 108;
         let chairStates = new Array(108).fill(false);
         let fillPriority = [];
 
-        function chairsPerRow() {
-            return layout.reduce((a, b) => a + b, 0);
+        function makeRepeatedRowLayouts(rowCount, rowLayout) {
+            return Array.from({ length: rowCount }, () => rowLayout.slice());
         }
 
-        // Center-out fill priority for any layout
-        function generateFillPriority(r, l) {
-            const cpr = l.reduce((a, b) => a + b, 0);
-            const priority = [];
+        function cloneRowLayouts(layoutRows) {
+            return layoutRows.map(rowLayout => rowLayout.slice());
+        }
 
-            for (let row = 0; row < r; row++) {
-                const rowStart = row * cpr;
+        function isSameRowLayout(layoutRows) {
+            if (layoutRows.length === 0) return true;
+            const first = JSON.stringify(layoutRows[0]);
+            return layoutRows.every(rowLayout => JSON.stringify(rowLayout) === first);
+        }
+
+        function rowSeatCount(rowLayout) {
+            return rowLayout.reduce((a, b) => a + b, 0);
+        }
+
+        function countTotalChairs(layoutRows) {
+            return layoutRows.reduce((sum, rowLayout) => sum + rowSeatCount(rowLayout), 0);
+        }
+
+        function countTables(layoutRows) {
+            return layoutRows.reduce((sum, rowLayout) => {
+                return sum + rowLayout.reduce((rowSum, groupSeats) => rowSum + (groupSeats / 2), 0);
+            }, 0);
+        }
+
+        function chairsPerRow() {
+            return rowLayouts.length ? rowSeatCount(rowLayouts[0]) : 0;
+        }
+
+        function maxSeatsPerRow() {
+            return Math.max(...rowLayouts.map(rowSeatCount), 1);
+        }
+
+        function validateRowLayouts(layoutRows) {
+            if (!layoutRows.length) return 'Enter at least one row layout.';
+            if (layoutRows.length > 30) return 'Use 30 rows or fewer.';
+
+            for (let rowIndex = 0; rowIndex < layoutRows.length; rowIndex++) {
+                const rowLayout = layoutRows[rowIndex];
+                if (!rowLayout.length) return `Row ${rowIndex + 1} needs at least one table group.`;
+
+                for (let groupIndex = 0; groupIndex < rowLayout.length; groupIndex++) {
+                    const groupSeats = rowLayout[groupIndex];
+                    if (!Number.isInteger(groupSeats) || groupSeats < 2) {
+                        return `Row ${rowIndex + 1}, group ${groupIndex + 1} must be at least 2 seats.`;
+                    }
+                    if (groupSeats % 2 !== 0) {
+                        return `Row ${rowIndex + 1}, group ${groupIndex + 1} must be even because each table has 2 seats.`;
+                    }
+                }
+            }
+
+            if (countTotalChairs(layoutRows) > 300) return 'Use 300 chairs or fewer.';
+            return '';
+        }
+
+        function parseGroupList(rawValue) {
+            const tokens = rawValue
+                .trim()
+                .split(/[,\s-]+/)
+                .map(token => token.trim())
+                .filter(Boolean);
+
+            if (!tokens.length) return [];
+            return tokens.map(token => Number.parseInt(token, 10));
+        }
+
+        function parseCustomRows(rawValue) {
+            return rawValue
+                .split(/[\n;]+/)
+                .map(row => parseGroupList(row))
+                .filter(rowLayout => rowLayout.length > 0);
+        }
+
+        function normalizeChairStates(states, chairCount) {
+            const normalized = new Array(chairCount).fill(false);
+            if (!Array.isArray(states)) return normalized;
+
+            for (let i = 0; i < Math.min(states.length, chairCount); i++) {
+                normalized[i] = !!states[i];
+            }
+
+            return normalized;
+        }
+
+        function applyLayoutState(layoutRows, states) {
+            rowLayouts = cloneRowLayouts(layoutRows);
+            rows = rowLayouts.length;
+            layout = rowLayouts[0] ? rowLayouts[0].slice() : [];
+            totalChairs = countTotalChairs(rowLayouts);
+            chairStates = normalizeChairStates(states, totalChairs);
+            fillPriority = generateFillPriority(rowLayouts);
+        }
+
+        function getSavedRowLayouts(data) {
+            if (Array.isArray(data.rowLayouts)) {
+                const savedRows = data.rowLayouts
+                    .filter(rowLayout => Array.isArray(rowLayout))
+                    .map(rowLayout => rowLayout.map(value => Number.parseInt(value, 10)));
+                if (!validateRowLayouts(savedRows)) return savedRows;
+            }
+
+            const legacyRows = Number.parseInt(data.rows, 10) || rows;
+            const legacyLayout = Array.isArray(data.layout)
+                ? data.layout.map(value => Number.parseInt(value, 10))
+                : layout;
+            const fallbackRows = makeRepeatedRowLayouts(legacyRows, legacyLayout);
+
+            return validateRowLayouts(fallbackRows) ? rowLayouts : fallbackRows;
+        }
+
+        function formatRowLayout(rowLayout) {
+            return rowLayout.join('-');
+        }
+
+        function formatLayoutSummary() {
+            const totalTables = countTables(rowLayouts);
+            if (isSameRowLayout(rowLayouts)) {
+                const perRowTables = rowLayouts[0].reduce((sum, groupSeats) => sum + (groupSeats / 2), 0);
+                return `${rows} rows · groups ${formatRowLayout(rowLayouts[0])} · ${perRowTables} tables per row · ${totalChairs} chairs total`;
+            }
+
+            return `${rows} custom rows · ${totalTables} tables · ${totalChairs} chairs total`;
+        }
+
+        // Center-out fill priority for flexible row layouts
+        function generateFillPriority(layoutRows) {
+            const priority = [];
+            let rowStart = 0;
+
+            layoutRows.forEach(rowLayout => {
+                const cpr = rowSeatCount(rowLayout);
                 const lo = Math.floor((cpr - 1) / 2);
                 const hi = lo + (cpr % 2 === 0 ? 1 : 0);
 
@@ -658,27 +844,34 @@
                     if (lo - d >= 0) priority.push(rowStart + lo - d);
                     if (hi + d < cpr) priority.push(rowStart + hi + d);
                 }
-            }
+
+                rowStart += cpr;
+            });
 
             return priority;
         }
 
         function saveToFirestore() {
             db.collection('bag-tracker').doc('current').set({
+                schemaVersion: 2,
                 rows,
                 layout,
+                rowLayouts,
                 chairStates,
                 lastClientId: myClientId
+            }).catch(error => {
+                console.error('Unable to sync bag tracker state:', error);
             });
         }
 
         function createSeatingLayout() {
             const seatingArea = document.getElementById('seatingArea');
             seatingArea.innerHTML = '';
+            seatingArea.style.setProperty('--max-row-seats', maxSeatsPerRow());
 
             let chairNumber = 0;
 
-            for (let row = 0; row < rows; row++) {
+            rowLayouts.forEach((rowLayout, row) => {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row';
 
@@ -687,29 +880,36 @@
                 rowLabel.textContent = `Row ${row + 1}`;
                 rowDiv.appendChild(rowLabel);
 
-                layout.forEach(tableSize => {
+                rowLayout.forEach(groupSeats => {
                     const tableGroup = document.createElement('div');
                     tableGroup.className = 'table-group';
 
-                    for (let seat = 0; seat < tableSize; seat++) {
-                        const chair = document.createElement('div');
-                        chair.className = 'chair';
-                        chair.dataset.chairNum = chairNumber;
-                        chair.textContent = chairNumber + 1;
+                    for (let table = 0; table < groupSeats / 2; table++) {
+                        const tablePair = document.createElement('div');
+                        tablePair.className = 'table-pair';
 
-                        chair.addEventListener('click', (function(num) {
-                            return function() { toggleChair(num); };
-                        })(chairNumber));
+                        for (let seat = 0; seat < 2; seat++) {
+                            const chair = document.createElement('div');
+                            chair.className = 'chair';
+                            chair.dataset.chairNum = chairNumber;
+                            chair.textContent = chairNumber + 1;
 
-                        tableGroup.appendChild(chair);
-                        chairNumber++;
+                            chair.addEventListener('click', (function(num) {
+                                return function() { toggleChair(num); };
+                            })(chairNumber));
+
+                            tablePair.appendChild(chair);
+                            chairNumber++;
+                        }
+
+                        tableGroup.appendChild(tablePair);
                     }
 
                     rowDiv.appendChild(tableGroup);
                 });
 
                 seatingArea.appendChild(rowDiv);
-            }
+            });
 
             updateDisplay();
         }
@@ -759,42 +959,55 @@
         function updateConfigUI() {
             document.getElementById('cfgRows').value = rows;
             document.getElementById('cfgLayout').value = layout.join(',');
-            const cpr = chairsPerRow();
-            document.getElementById('configSummary').textContent =
-                `${rows} rows · ${layout.join('-')} chairs per row · ${totalChairs} chairs total`;
+            document.getElementById('cfgRowLayouts').value = rowLayouts.map(formatRowLayout).join('\n');
+            document.getElementById('configSummary').textContent = formatLayoutSummary();
         }
 
-        function applyConfig() {
+        function applyNewLayout(layoutRows) {
+            const validationError = validateRowLayouts(layoutRows);
+            if (validationError) {
+                alert(validationError);
+                return;
+            }
+
+            const newTotal = countTotalChairs(layoutRows);
+            const layoutLabel = isSameRowLayout(layoutRows)
+                ? `${layoutRows.length} rows · ${formatRowLayout(layoutRows[0])}`
+                : `${layoutRows.length} custom rows`;
+
+            if (!confirm(`Apply new layout? ${layoutLabel} · ${newTotal} chairs total.\n\nThis will reset all current bag placements.`)) return;
+
+            applyLayoutState(layoutRows, new Array(newTotal).fill(false));
+            updateConfigUI();
+            createSeatingLayout();
+            saveToFirestore();
+        }
+
+        function applyRepeatedLayout() {
             const newRows = parseInt(document.getElementById('cfgRows').value);
             const rawLayout = document.getElementById('cfgLayout').value;
-            const newLayout = rawLayout.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
+            const newLayout = parseGroupList(rawLayout);
 
             if (!newRows || newRows < 1 || newRows > 30) {
                 alert('Rows must be between 1 and 30.');
                 return;
             }
             if (newLayout.length === 0) {
-                alert('Enter at least one chair group (e.g. 6,6,6).');
+                alert('Enter at least one table group (e.g. 6,6,4).');
                 return;
             }
 
-            const newTotal = newRows * newLayout.reduce((a, b) => a + b, 0);
-            if (!confirm(`Apply new layout? ${newRows} rows · ${newLayout.join('-')} chairs per row · ${newTotal} chairs total.\n\nThis will reset all current bag placements.`)) return;
+            applyNewLayout(makeRepeatedRowLayouts(newRows, newLayout));
+        }
 
-            rows = newRows;
-            layout = newLayout;
-            totalChairs = newTotal;
-            chairStates = new Array(totalChairs).fill(false);
-            fillPriority = generateFillPriority(rows, layout);
-
-            updateConfigUI();
-            createSeatingLayout();
-            saveToFirestore();
+        function applyCustomLayout() {
+            const newRowLayouts = parseCustomRows(document.getElementById('cfgRowLayouts').value);
+            applyNewLayout(newRowLayouts);
         }
 
         window.addEventListener('load', () => {
             // Initialize with defaults, then load from Firestore
-            fillPriority = generateFillPriority(rows, layout);
+            fillPriority = generateFillPriority(rowLayouts);
             updateConfigUI();
             createSeatingLayout();
             setupScrollIndicators();
@@ -803,24 +1016,20 @@
                 if (!snapshot.exists) return;
                 const data = snapshot.data();
 
-                const newRows = data.rows || rows;
-                const newLayout = data.layout || layout;
+                const newRowLayouts = getSavedRowLayouts(data);
                 const layoutChanged =
-                    newRows !== rows ||
-                    JSON.stringify(newLayout) !== JSON.stringify(layout);
+                    JSON.stringify(newRowLayouts) !== JSON.stringify(rowLayouts);
 
                 if (layoutChanged) {
-                    rows = newRows;
-                    layout = newLayout;
-                    totalChairs = rows * layout.reduce((a, b) => a + b, 0);
-                    fillPriority = generateFillPriority(rows, layout);
-                    chairStates = data.chairStates || new Array(totalChairs).fill(false);
+                    applyLayoutState(newRowLayouts, data.chairStates);
                     updateConfigUI();
                     createSeatingLayout();
                 } else if (data.lastClientId !== myClientId) {
-                    chairStates = data.chairStates || new Array(totalChairs).fill(false);
+                    chairStates = normalizeChairStates(data.chairStates, totalChairs);
                     updateDisplay();
                 }
+            }, error => {
+                console.error('Unable to load shared bag tracker state:', error);
             });
         });
 

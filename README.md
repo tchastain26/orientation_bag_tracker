@@ -7,7 +7,7 @@ Internal web apps for the Ballad Health OD team, hosted on GitHub Pages with Fir
 ## Apps
 
 ### Orientation Bag Tracker
-Plan seating and bag placement for orientation day. Configurable room layout (default: 6-6-6, 108 chairs). Fill algorithm places bags center-out, front to back. Real-time sync across devices via Firebase.
+Plan seating and bag placement for orientation day. Configurable two-seat table layouts (default: 6-6-6, 108 chairs) with repeated rows or custom row-by-row combinations such as 6-6-4. Fill algorithm places bags center-out, front to back. Real-time sync across devices via Firebase.
 
 ### Catered Lunch Log
 Running log of team catered lunches — date and what was served. Shared in real time.
