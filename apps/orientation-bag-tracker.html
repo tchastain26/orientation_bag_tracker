@@ -9,26 +9,19 @@
     <style>
         :root {
             --ballad-blue: #006BB6;
-            --ballad-deep-blue: #0060A0;
-            --ballad-navy: #11384F;
+            --ballad-light-blue: #41B6E6;
+            --ballad-dark-blue: #171C8F;
+            --ballad-purple: #B0008E;
+            --ballad-maroon: #672146;
             --ballad-red: #D22630;
-            --ballad-red-dark: #B81E28;
-            --ballad-orange: #F28C28;
-            --ballad-yellow: #FFC72C;
-            --ballad-green: #54B948;
-            --page: #F4F8FA;
+            --ballad-orange: #FF6C0C;
+            --ballad-yellow: #FFAD00;
+            --ballad-gray: #707372;
+            --ballad-light-gray: #EDEDEE;
+            --black: #000000;
             --surface: #FFFFFF;
-            --surface-soft: #F7FBFD;
-            --blue-soft: #EEF7FC;
-            --table-soft: #E9F5FB;
-            --blue-line: #CFE4F1;
-            --table-line: #B7D5E6;
-            --chair-line: #526F80;
-            --line: #DCE8EF;
-            --ink: #183243;
-            --muted: #607382;
-            --shadow: 0 10px 30px rgba(17, 56, 79, 0.12);
-            --shadow-soft: 0 3px 12px rgba(17, 56, 79, 0.08);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --shadow-soft: 0 3px 12px rgba(0, 0, 0, 0.08);
         }
 
         * {
@@ -38,11 +31,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--page);
+            font-family: "Proxima Nova", Verdana, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--ballad-light-gray);
             min-height: 100vh;
             padding: 20px;
-            color: var(--ink);
+            color: var(--ballad-gray);
         }
 
         .container {
@@ -55,7 +48,7 @@
             border-radius: 8px;
             padding: 30px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(0, 96, 160, 0.12);
+            border: 1px solid var(--ballad-light-gray);
             position: relative;
             overflow: hidden;
         }
@@ -69,10 +62,11 @@
             height: 6px;
             background: linear-gradient(90deg,
                 var(--ballad-blue) 0 42%,
-                var(--ballad-green) 42% 58%,
-                var(--ballad-yellow) 58% 72%,
-                var(--ballad-orange) 72% 86%,
-                var(--ballad-red) 86% 100%);
+                var(--ballad-light-blue) 42% 56%,
+                var(--ballad-purple) 56% 68%,
+                var(--ballad-yellow) 68% 80%,
+                var(--ballad-orange) 80% 90%,
+                var(--ballad-red) 90% 100%);
         }
 
         .header {
@@ -81,7 +75,7 @@
             justify-content: space-between;
             margin: 2px 0 20px;
             padding: 16px 0 18px;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid var(--ballad-light-gray);
         }
 
         .logo-container {
@@ -97,7 +91,7 @@
 
         .back-button {
             display: inline-block;
-            color: var(--ballad-deep-blue);
+            color: var(--ballad-blue);
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 700;
@@ -106,18 +100,18 @@
         }
 
         .back-button:hover {
-            background: var(--blue-soft);
+            background: var(--ballad-light-gray);
         }
 
         h1 {
-            color: var(--ballad-deep-blue);
+            color: var(--ballad-blue);
             margin-bottom: 4px;
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 400;
         }
 
         .subtitle {
-            color: var(--muted);
+            color: var(--ballad-gray);
             margin-bottom: 16px;
             font-size: 1rem;
         }
@@ -125,7 +119,7 @@
         /* Settings panel */
         .settings-panel {
             margin-bottom: 14px;
-            border: 1px solid var(--line);
+            border: 1px solid var(--ballad-light-gray);
             border-radius: 8px;
             overflow: hidden;
             background: var(--surface);
@@ -134,11 +128,11 @@
 
         .settings-panel summary {
             padding: 12px 16px;
-            background: var(--surface-soft);
+            background: var(--surface);
             cursor: pointer;
             font-weight: 700;
             font-size: 0.88rem;
-            color: var(--ballad-navy);
+            color: var(--ballad-blue);
             user-select: none;
             list-style: none;
         }
@@ -146,7 +140,7 @@
         .settings-panel summary::-webkit-details-marker { display: none; }
 
         .settings-panel[open] summary {
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid var(--ballad-light-gray);
         }
 
         .settings-inner {
@@ -176,7 +170,7 @@
             display: block;
             font-weight: 600;
             margin-bottom: 6px;
-            color: var(--ink);
+            color: var(--black);
             font-size: 0.88rem;
         }
 
@@ -184,12 +178,12 @@
         .settings-row textarea {
             width: 100%;
             padding: 9px 12px;
-            border: 1px solid var(--line);
+            border: 1px solid var(--ballad-light-gray);
             border-radius: 6px;
             font-size: 0.95rem;
             font-family: inherit;
             transition: border-color 0.2s, box-shadow 0.2s;
-            color: var(--ink);
+            color: var(--black);
             background: var(--surface);
         }
 
@@ -221,10 +215,10 @@
 
         .config-summary {
             font-size: 0.83rem;
-            color: var(--ballad-navy);
+            color: var(--ballad-blue);
             padding: 8px 10px;
-            background: var(--blue-soft);
-            border: 1px solid var(--blue-line);
+            background: var(--surface);
+            border: 1px solid var(--ballad-light-gray);
             border-radius: 6px;
         }
 
@@ -236,8 +230,8 @@
             margin-bottom: 14px;
             padding: 14px;
             align-items: end;
-            background: var(--blue-soft);
-            border: 1px solid var(--blue-line);
+            background: var(--surface);
+            border: 1px solid var(--ballad-light-gray);
             border-radius: 8px;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
         }
@@ -250,19 +244,19 @@
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--ink);
+            color: var(--black);
             font-size: 0.95rem;
         }
 
         input[type="number"],
         input[type="text"] {
             padding: 10px 12px;
-            border: 1px solid var(--line);
+            border: 1px solid var(--ballad-light-gray);
             border-radius: 6px;
             font-size: 1rem;
             width: 100%;
             transition: border-color 0.2s, box-shadow 0.2s;
-            color: var(--ink);
+            color: var(--black);
         }
 
         input:focus {
@@ -272,7 +266,7 @@
         }
 
         button {
-            background: var(--ballad-deep-blue);
+            background: var(--ballad-blue);
             color: var(--surface);
             border: none;
             padding: 10px 24px;
@@ -281,12 +275,12 @@
             font-weight: 700;
             cursor: pointer;
             transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(0, 96, 160, 0.22);
+            box-shadow: 0 2px 8px rgba(0, 107, 182, 0.22);
         }
 
         button:hover {
-            background: var(--ballad-navy);
-            box-shadow: 0 4px 12px rgba(17, 56, 79, 0.24);
+            background: var(--ballad-dark-blue);
+            box-shadow: 0 4px 12px rgba(23, 28, 143, 0.24);
         }
 
         button:active {
@@ -299,7 +293,7 @@
         }
 
         button.reset:hover {
-            background: var(--ballad-red-dark);
+            background: var(--ballad-maroon);
         }
 
         .legend {
@@ -307,9 +301,9 @@
             gap: 14px;
             margin-bottom: 14px;
             padding: 10px 12px;
-            background: var(--surface-soft);
+            background: var(--surface);
             border-radius: 8px;
-            border: 1px solid var(--line);
+            border: 1px solid var(--ballad-light-gray);
             border-left: 5px solid var(--ballad-blue);
             align-items: center;
             flex-wrap: wrap;
@@ -325,7 +319,7 @@
             width: 16px;
             height: 16px;
             border-radius: 4px;
-            border: 2px solid var(--ballad-navy);
+            border: 2px solid var(--black);
             flex-shrink: 0;
         }
 
@@ -340,7 +334,7 @@
         .legend-text {
             font-size: 0.88rem;
             font-weight: 500;
-            color: var(--ink);
+            color: var(--black);
         }
 
         .room-label {
@@ -350,7 +344,7 @@
             margin-bottom: 12px;
             color: var(--surface);
             padding: 9px 12px;
-            background: var(--ballad-deep-blue);
+            background: var(--ballad-blue);
             border-radius: 8px;
             box-shadow: var(--shadow-soft);
         }
@@ -361,9 +355,9 @@
             gap: 15px;
             margin-top: 12px;
             padding: 25px;
-            background: var(--surface-soft);
+            background: var(--surface);
             border-radius: 8px;
-            border: 1px solid var(--line);
+            border: 1px solid var(--ballad-light-gray);
             position: relative;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -388,14 +382,14 @@
             left: 0;
             float: left;
             margin-right: -30px;
-            background: linear-gradient(to right, rgba(17, 56, 79, 0.18), transparent);
+            background: linear-gradient(to right, rgba(112, 115, 114, 0.28), transparent);
         }
 
         .seating-area::after {
             right: 0;
             float: right;
             margin-left: -30px;
-            background: linear-gradient(to left, rgba(17, 56, 79, 0.18), transparent);
+            background: linear-gradient(to left, rgba(112, 115, 114, 0.28), transparent);
         }
 
         .seating-area.show-left-shadow::before { opacity: 1; }
@@ -412,7 +406,7 @@
             display: none;
             align-items: center;
             font-weight: 600;
-            color: var(--muted);
+            color: var(--ballad-gray);
             min-width: 70px;
             font-size: 0.9rem;
             flex-shrink: 0;
@@ -422,11 +416,11 @@
             display: flex;
             gap: 6px;
             padding: 4px;
-            background: var(--table-soft);
-            border: 1px solid var(--blue-line);
+            background: var(--ballad-light-gray);
+            border: 1px solid var(--ballad-light-gray);
             border-radius: 6px;
             flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(17, 56, 79, 0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
         }
 
         .table-group + .table-group {
@@ -438,14 +432,14 @@
             gap: 2px;
             padding: 2px;
             background: var(--surface);
-            border: 1px solid var(--table-line);
+            border: 1px solid var(--ballad-gray);
             border-radius: 5px;
         }
 
         .chair {
             width: 52px;
             height: 52px;
-            border: 2px solid var(--chair-line);
+            border: 2px solid var(--ballad-gray);
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -455,15 +449,15 @@
             cursor: pointer;
             transition: all 0.2s;
             background: var(--surface);
-            color: var(--ink);
+            color: var(--black);
             flex-shrink: 0;
         }
 
         .chair.filled {
             background: var(--ballad-blue);
             color: var(--surface);
-            border-color: var(--ballad-deep-blue);
-            box-shadow: inset 0 -2px 0 rgba(17, 56, 79, 0.22);
+            border-color: var(--ballad-dark-blue);
+            box-shadow: inset 0 -2px 0 rgba(23, 28, 143, 0.22);
         }
 
         .chair:hover {
@@ -474,15 +468,15 @@
         .summary {
             margin-top: 25px;
             padding: 15px 20px;
-            background: var(--blue-soft);
+            background: var(--surface);
             border-radius: 8px;
             font-size: 1rem;
-            border: 1px solid var(--blue-line);
+            border: 1px solid var(--ballad-light-gray);
             border-left: 5px solid var(--ballad-blue);
         }
 
         .summary strong {
-            color: var(--ballad-deep-blue);
+            color: var(--ballad-blue);
             font-weight: 600;
         }
 

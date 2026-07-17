@@ -1,4 +1,4 @@
-const CACHE_NAME = 'od-tools-v3';
+const CACHE_NAME = 'od-tools-v4';
 const urlsToCache = [
   './',
   './index.html',
